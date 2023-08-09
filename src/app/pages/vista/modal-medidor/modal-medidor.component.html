@@ -1,0 +1,68 @@
+<button nz-button nzType="primary" nzSize="small"><i nz-icon nzTheme="outline" nzType="sliders" (click)="showModal()"></i></button>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Factor" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <ng-container *nzModalContent>
+        <form nz-form [formGroup]="validateForm" nzLayout="horizontal">
+          <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Id</nz-form-label>
+                    <input nz-input formControlName="id" style="width: 470px;"/>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="8">
+          <div nz-col nzSpan="24">
+              <nz-form-item>
+                  <nz-form-label>Variable Medidores</nz-form-label>
+                  <nz-select formControlName="medidorId" nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedValue">
+                    <nz-option nzLabel="id" nzValue="id"></nz-option>
+                    <nz-option nzLabel="descripcion" nzValue="descripcion"></nz-option>
+                  </nz-select>
+                  
+                  
+                </nz-form-item>
+          </div>
+      </div>
+      <div nz-row [nzGutter]="8">
+        <div nz-col nzSpan="24">
+            <nz-form-item>
+                <nz-form-label>Operacion</nz-form-label>
+                <input nz-input formControlName="Operacion" style="width: 470px;"/>
+            </nz-form-item>
+        </div>
+    </div>
+        </form>  
+        
+        <hr> 
+        
+        <nz-table #sortTable [nzData]="listOfData" nzTableLayout="fixed" [nzScroll]="{ x: '100%', y: '240px' }">
+            <thead>
+              <tr>
+                <th nzLeft nzWidth="100px">Acciones</th>
+                <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
+                  {{ column.title }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of sortTable.data">
+                <td nzLeft nzAlign="center">
+                  <div nz-row>
+                    <div nz-col nzSpan="10">
+                     <app-modal-medidor></app-modal-medidor>
+                    </div>
+                    <div nz-col nzSpan="10" nzOffset="1">
+                      <button nz-button nzType="primary" nzSize="small" nzDanger><i nz-icon nzTheme="outline" nzType="delete"></i></button>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ data.id }}</td>
+                <td>{{ data.varibaleMedidores }}</td>
+                <td>{{ data.operacion }}</td>
+              </tr>
+            </tbody>
+          </nz-table>
+
+    </ng-container>
+</nz-modal>
+

@@ -1,0 +1,57 @@
+<button nz-button nzType="primary" nzSize="small"><i nz-icon nzTheme="outline" nzType="plus" (click)="showModal()"></i></button>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Factor" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <ng-container *nzModalContent>
+        <form nz-form [formGroup]="validateForm" nzLayout="horizontal">
+          <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Rango de fecha</nz-form-label>
+                    <nz-form-control  nzErrorTip="Por favor escriba el dato correcto!">
+                      <nz-range-picker formControlName="fecha" [nzShowTime]="true" (ngModelChange)="onChange($event)"></nz-range-picker>
+                  
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="8">
+          <div nz-col nzSpan="24">
+              <nz-form-item>
+                  <nz-form-label>Valor</nz-form-label>
+                      <input formControlName="valor" nz-input/>
+              </nz-form-item>
+          </div>
+      </div>
+        </form>  
+        
+        <hr> 
+        
+        <nz-table #sortTable [nzData]="listOfData" nzTableLayout="fixed" [nzScroll]="{ x: '100%', y: '240px' }">
+            <thead>
+              <tr>
+                <th nzLeft nzWidth="100px">Acciones</th>
+                <th *ngFor="let column of listOfColumn" [nzSortFn]="column.compare" [nzSortPriority]="column.priority">
+                  {{ column.title }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of sortTable.data">
+                <td nzLeft nzAlign="center">
+                  <div nz-row>
+                    <div nz-col nzSpan="10">
+                     <app-modal-factor></app-modal-factor>
+                    </div>
+                    <div nz-col nzSpan="10" nzOffset="1">
+                      <button nz-button nzType="primary" nzSize="small" nzDanger><i nz-icon nzTheme="outline" nzType="delete"></i></button>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ data.fechaInicial }}</td>
+                <td>{{ data.fechaFinal }}</td>
+                <td>{{ data.valor }}</td>
+              </tr>
+            </tbody>
+          </nz-table>
+
+    </ng-container>
+</nz-modal>

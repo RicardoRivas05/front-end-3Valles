@@ -1,0 +1,56 @@
+:host {
+    text-align: center;
+  }
+
+  nz-header{
+    background: #FFFFFF;
+    color: #fff;
+    text-align: left;
+  }
+
+  nz-footer {
+    line-height: 1.5;
+  }
+
+
+  nz-content {
+    background: #FFFFFF;
+    color: #fff;
+    min-height: 120px;
+    line-height: 120px;
+  }
+
+  nz-layout {
+    margin-bottom: 48px;
+  }
+
+  nz-layout:last-child {
+    margin: 0;
+  }
+    
+.tabla {
+    width: 50%;
+    margin: auto;
+}
+
+.search-box {
+    padding: 8px;
+}
+
+.search-box input {
+    width: 188px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.search-box button {
+    width: 90px;
+}
+
+.search-button {
+    margin-right: 8px;
+}
+
+.ant-form-item{
+  text-align: end;
+}

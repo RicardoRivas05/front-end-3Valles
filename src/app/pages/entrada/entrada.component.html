@@ -1,0 +1,260 @@
+<nz-layout>
+    <nz-header>
+        <div nz-row>
+            <div nz-col nzSpan="20">
+                <h1> Entrada de Energia </h1>
+            </div>
+            <div nz-col nzSpan="4">
+                <button nz-button nzType="primary" (click)="showModal()" nzShape="round"><i nz-icon nzType="plus"
+                        nzTheme="outline"></i>Nueva Entrada</button>
+            </div>
+        </div>
+    </nz-header>
+    <nz-content>
+        <div class="tabla">
+            <nz-table #nzTable [nzData]="listOfDisplayData" nzTableLayout="fixed" nzPageSize="5">
+                <thead>
+                    <tr>
+                        <th nzWidth="60px" colspan="2">
+                            <nz-filter-trigger [(nzVisible)]="visible" [nzActive]="searchValue.length > 0"
+                                [nzDropdownMenu]="menu">
+                                <i nz-icon nzType="search"></i>
+                            </nz-filter-trigger>
+                        </th>
+                        <th *ngFor="let column of listOfColumns" [nzSortOrder]="column.sortOrder"
+                            [nzSortFn]="column.sortFn" [nzSortDirections]="column.sortDirections">{{column.name}}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of nzTable.data">
+                        <td nzWidth="30px">
+                            <button nz-button nzType="primary" (click)="editar(data)" nzShape="circle">
+                                <i nz-icon nzType="edit" nzTheme="outline"></i>
+                            </button>
+                        </td>
+                        <td nzWidth="30px">
+                            <button nz-button nzType="primary" nz-popconfirm
+                                nzPopconfirmTitle="¿Está seguro de borrar el registro?" nzPopconfirmPlacement="bottom"
+                                (nzOnConfirm)="eliminar(data)" (nzOnCancel)="cancel()" nzShape="circle" nzCancelText="No" nzOkText="Si">
+                                <i nz-icon nzType="delete" nzTheme="outline"></i>
+                            </button>
+                        </td>
+                        <td>{{data.codigo}}</td>
+                        <td>{{data.descripcion}}</td>
+                        <td>
+                            <div *ngIf="data.tipo; else tipoFalse">Externo</div>
+                            <ng-template #tipoFalse>Interno</ng-template>
+                        </td>
+                        <td nzWidth="30px">
+                            <button nz-button nzType="primary" nzSize="small" nzShape="round" (click)="openAsignarMedidor(data)">Asignar Medidor</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </nz-content>
+</nz-layout>
+
+<!-- Modal Formulario -->
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Configuración Entrada Energia" (nzOnCancel)="handleCancel()">
+    <ng-container *nzModalContent>
+        <form nz-form nzLayout="vertical" (ngSubmit)="submitForm()" [formGroup]="validateForm">
+            <div nz-row>
+                <div nz-col nzSpan="11">
+                    <nz-form-item>
+                        <nz-form-label>Codigo</nz-form-label>
+                        <nz-form-control nzErrorTip="Por favor escriba el dato correcto!">
+                            <input nz-input formControlName="codigo" placeholder="Escribe aquí..." />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzSpan="2"></div>
+                <div nz-col nzSpan="11">
+                    <nz-form-item>
+                        <nz-form-label>Tipo</nz-form-label>
+                        <nz-form-control nzErrorTip="Por favor escriba el dato correcto!">
+                            <nz-radio-group formControlName="tipo">
+                                <label nz-radio nzValue="true">Externo</label>
+                                <label nz-radio nzValue="false">Interno</label>
+                            </nz-radio-group>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+            <nz-form-item>
+                <nz-form-label>Descripción</nz-form-label>
+                <nz-form-control nzErrorTip="Por favor escriba el dato correcto!">
+                    <input nz-input formControlName="descripcion" placeholder="Escribe aquí..." />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label>Observación</nz-form-label>
+                <nz-form-control nzErrorTip="Por favor escriba el dato correcto!">
+                    <textarea nz-input formControlName="observacion" placeholder="Escribe aquí..."></textarea>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-container>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancelar</button>
+        <button nz-button nzType="primary" (click)="guardar()" [disabled]="permiso">Guardar</button>
+    </div>
+</nz-modal>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+    <div class="ant-table-filter-dropdown">
+        <div class="search-box">
+            <input type="text" nz-input placeholder="Descripción" [(ngModel)]="searchValue"
+                (keydown.enter)="search()" />
+            <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
+                Buscar
+            </button>
+            <button nz-button nzSize="small" (click)="reset()">Limpiar</button>
+        </div>
+    </div>
+</nz-dropdown-menu>
+
+<!-- Draw Medidores -->
+
+<nz-drawer [nzBodyStyle]="{ overflow: 'auto' }" [nzMaskClosable]="false" [nzWidth]="1020" [nzVisible]="visibleDrawer"
+    nzTitle="Asignacion de Medidores" [nzFooter]="footerTpl" (nzOnClose)="close()">
+    <ng-container *nzDrawerContent>
+        <div style="background-color: #f3f9ff; padding: 15px;">
+            <h4> Listado de Medidores </h4>
+            <nz-table #nzTableMedidor [nzData]="listofMedidor" nzTableLayout="fixed" nzPageSize="2">
+                <thead>
+                    <tr>
+                        <th nzWidth="60px"></th>
+                        <th>Codigo Medidor</th>
+                        <th>Fecha Inicial</th>
+                        <th>Fecha Final</th>
+                        <th>Jerarquia</th>
+                        <th nzWidth="10%"></th>
+                        <th nzWidth="10%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let data of nzTableMedidor.data">
+                        <tr>
+                            <td [nzExpand]="expandSet.has(data.id)" nzShowExpand="true"
+                                (nzExpandChange)="onExpandChange(data.id, $event)"></td>
+                            <td>{{ data.variableMedidorId + ' - ' + data.variableMedidor.medidor.descripcion + ' '
+                                +data.variableMedidor.variable.descripcion }}</td>
+                            <td>{{ data.fechaInicial | date:'yyyy-MM-dd':'+0600'}}</td>
+                            <td>{{ data.fechaFinal | date:'yyyy-MM-dd':'+0600'}}</td>
+                            <td>{{ data.jerarquia.descripcion }}</td>
+                            <td>
+                                <button nz-button nzType="primary" (click)="editarMedidor(data)" nzShape="circle">
+                                    <i nz-icon nzType="edit" nzTheme="outline"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button nz-button nzType="primary" nz-popconfirm
+                                    nzPopconfirmTitle="¿Está seguro de borrar el registro?"
+                                    nzPopconfirmPlacement="bottom" (nzOnConfirm)="eliminarMedidor(data)"
+                                    (nzOnCancel)="cancel()" nzShape="circle" nzCancelText="No" nzOkText="Si">
+                                    <i nz-icon nzType="delete" nzTheme="outline"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr [nzExpand]="expandSet.has(data.id)">
+                            <td colSpan="7"><span style="color: black; font-weight: bold;"> Observación: </span>
+                                {{data.observacion }}</td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </nz-table>
+        </div>
+        <br>
+        <h4> Formulario de Registro </h4>
+        <form nz-form nzLayout="vertical" (ngSubmit)="submitFormMedidores()" [formGroup]="validateFormMedidores">
+            <div nz-row>
+                <div nz-col nzSpan="8">
+                    <nz-form-item>
+                        <nz-form-label>Codigo Medidor</nz-form-label>
+                        <nz-form-control nzErrorTip="Por favor escriba el dato correcto!">
+                            <nz-select formControlName="variableMedidorId" nzPlaceHolder="Selecciona aquí..."
+                                nzShowSearch nzAllowClear>
+                                <nz-option *ngFor="let item of listofVariableMedidor" [nzValue]="item.variableMedidorId"
+                                    [nzLabel]="item.medidor + ' - ' + item.name">
+                                </nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzSpan="1"></div>
+                <div nz-col nzSpan="6">
+                    <nz-form-item>
+                        <nz-form-label>Jerarquia</nz-form-label>
+                        <nz-form-control nzErrorTip="Por favor escriba el dato correcto!">
+                            <nz-select formControlName="jerarquiaId" nzPlaceHolder="Selecciona aquí..." nzShowSearch
+                                nzAllowClear>
+                                <nz-option *ngFor="let item of listofJerarquia" [nzValue]="item.id"
+                                    [nzLabel]="item.descripcion">
+                                </nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzSpan="1"></div>
+                <div nz-col nzSpan="8">
+                    <nz-form-item>
+                        <nz-form-label>Rango de Fechas</nz-form-label>
+                        <nz-form-control>
+                            <nz-range-picker nzFormat="yyyy-MM-dd HH:mm" style="width: 100%;" formControlName="fecha">
+                            </nz-range-picker>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+            <nz-form-item>
+                <nz-form-label>Observación</nz-form-label>
+                <nz-form-control nzErrorTip="Por favor escriba el dato correcto!">
+                    <textarea nz-input formControlName="observacion" placeholder="Escribe aquí..."></textarea>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control>
+                    <div nz-row *ngIf="accion==='editar'; else crearMedidor">
+                        <div nz-col nzSpan="7">
+                            <button nz-button style="width: 100%;" nzType="default"
+                                (click)="handleCancelMedidor()">Cancelar</button>
+                        </div>
+                        <div nz-col nzSpan="1"></div>
+                        <div nz-col nzSpan="7">
+                            <button nz-button style="width: 100%;" nzType="primary" (click)="guardarMedidor()"
+                                [disabled]="permiso">Guardar</button>
+                        </div>
+                        <div nz-col nzSpan="1"></div>
+                        <div nz-col nzSpan="8">
+                            <button nz-button style="width: 100%;" nzType="primary" (click)="showModalTransformacion()">Registrar
+                                Perdidas de Transformacion</button>
+                        </div>
+                    </div>
+
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-container>
+
+    <ng-template #footerTpl>
+        <div style="float: right">
+            <button nz-button nzType="primary" (click)="close()">OK</button>
+        </div>
+    </ng-template>
+
+    <ng-template #crearMedidor>
+        <div nz-row>
+            <div nz-col nzSpan="11">
+                <button nz-button style="width: 100%;" nzType="default"
+                    (click)="handleCancelMedidor()">Cancelar</button>
+            </div>
+            <div nz-col nzSpan="2"></div>
+            <div nz-col nzSpan="11">
+                <button nz-button style="width: 100%;" nzType="primary" (click)="guardarMedidor()"
+                    [disabled]="permiso">Guardar</button>
+            </div>
+        </div>
+    </ng-template>
+</nz-drawer>

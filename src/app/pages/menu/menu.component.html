@@ -1,0 +1,100 @@
+<nz-layout class="app-layout">
+    <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+        <div class="sidebar-logo">
+            <img src="assets/logo-simbolo.svg" alt="logo">
+            <h1>TRES VALLES</h1>
+        </div>
+
+        <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right" nzSelected>
+                <a [routerLink]="['/welcome']">
+                    <i nz-icon nzType="home"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <a [routerLink]="['/medidor']">
+                    <i nz-icon nzType="dashboard"></i>
+                    <span>Medidores</span>
+                </a>
+            </li>
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <a [routerLink]="['/jerarquia']">
+                    <i nz-icon nzType="cluster"></i>
+                    <span>Jerarquias</span>
+                </a>
+            </li>
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <a [routerLink]="['/entrada']">
+                    <i nz-icon nzType="thunderbolt"></i>
+                    <span>Entrada Energia</span>
+                </a>
+            </li>
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <a [routerLink]="['/transformadores']">
+                    <i nz-icon nzType="api"></i>
+                    <span>Transformadores</span>
+                </a>
+            </li>
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <a [routerLink]="['/consumidores']">
+                    <i nz-icon nzType="team"></i>
+                    <span>Consumidores</span>
+                </a>
+            </li>
+         <!--   <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <a [routerLink]="['/vista']">
+                    <i nz-icon nzType="number"></i>
+                    <span>Centro de Costos</span>
+                </a>
+            </li>-->
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <a [routerLink]="['/factura']">
+                    <i nz-icon nzType="solution"></i>
+                    <span>Facturacion</span>
+                </a>
+            </li>
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <a [routerLink]="['/dashboard']">
+                    <i nz-icon nzType="pie-chart"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+      <!--      <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <i nz-icon nzType="bar-chart"></i>
+                <span>Reportes</span>
+            </li>-->
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <a [routerLink]="['/grupos']">
+                    <i nz-icon nzType="tool"></i>
+                    <span>Configuraciones</span>
+                </a>
+            </li>
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right">
+                <i nz-icon nzType="question-circle"></i>
+                <span>Ayuda</span>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-layout>
+        <nz-header>
+            <div class="app-header">
+                <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+                    <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+                    <span>
+                        <label style="margin-left: 30%;">SISTEMA DE FACTURACIÓN ENÉRGETICA</label>
+                    </span>
+                </span>
+            </div>
+        </nz-header>
+        <nz-content>
+            <div class="inner-content">
+                <router-outlet></router-outlet>
+            </div>
+        </nz-content>
+    </nz-layout>
+</nz-layout>
+
+<div class="footer">
+    <label style="color: white;">© TRES VALLES, TODOS LOS DERECHOS RESERVADOS</label>
+</div>

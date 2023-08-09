@@ -1,0 +1,104 @@
+<nz-layout>
+    <nz-header>
+        <div nz-row>
+            <div nz-col nzSpan="20">
+                <h1> Factor Centro de Costos </h1>
+            </div>
+            <div nz-col nzSpan="4">
+ <!--               <button nz-button nzType="primary" (click)="showModal()" nzShape="round"><i nz-icon nzType="plus"
+                        nzTheme="outline"></i>Nuevo Grupo</button>-->
+            </div>
+        </div>
+    </nz-header>
+    <nz-content>
+        <div class="tabla">
+            <nz-table #nzTable [nzData]="listOfDisplayData" nzTableLayout="fixed" nzPageSize="5">
+                <thead>
+                    <tr>
+                        <th nzWidth="60px" colspan="2">
+                            <nz-filter-trigger [(nzVisible)]="visible" [nzActive]="searchValue.length > 0"
+                                [nzDropdownMenu]="menu">
+                                <i nz-icon nzType="search"></i>
+                            </nz-filter-trigger>
+                        </th>
+                        <th *ngFor="let column of listOfColumns" [nzSortOrder]="column.sortOrder"
+                            [nzSortFn]="column.sortFn" [nzSortDirections]="column.sortDirections">{{column.name}}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of nzTable.data">
+                        <td nzWidth="30px">
+                          <!--  <button nz-button nzType="primary" (click)="editar(data)" nzShape="circle">
+                                <i nz-icon nzType="edit" nzTheme="outline"></i>
+                            </button>-->
+                        </td>
+                        <td nzWidth="30px"><!--
+                            <button nz-button nzType="primary" nz-popconfirm
+                                nzPopconfirmTitle="¿Está seguro de borrar el registro?" nzPopconfirmPlacement="bottom"
+                                (nzOnConfirm)="eliminar(data)" (nzOnCancel)="cancel()" nzShape="circle"
+                                nzCancelText="No" nzOkText="Si">
+                                <i nz-icon nzType="delete" nzTheme="outline"></i>
+                            </button>-->
+                        </td>
+                        <td>{{data.nombre}}</td>
+                        <td>{{data.centroCosto.nombre}}</td>
+                        <td>{{data.factor.valor | number:'':'en_US' }}</td>
+                        
+                        <td nzWidth="60px">
+                            <p><button nz-button nzType="primary" nzSize="small" 
+                                    nzShape="round" (click)="showModalFactor(data)">Editar Factor</button>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </nz-content>
+</nz-layout>
+
+<nz-modal [(nzVisible)]="isVisibleFactor" nzTitle="Configuración Rollover" nzWidth="40%" nzFooter=" " (nzOnCancel)="handleCancelFactor()">
+    <ng-container *nzModalContent>
+        <form nz-form nzLayout="vertical" (ngSubmit)="submitFormFactor()" [formGroup]="validateForm">
+            <nz-form-item>
+                <nz-form-label>Valor de Factor</nz-form-label>
+                <nz-form-control nzErrorTip="Por favor escriba el dato correcto!">
+                    <div style="display: flex; justify-content: flex-start;">
+                        <nz-input-number style="width: 100%; margin: 0px;" formControlName="valor"
+                            [nzMin]="0" [nzStep]="1">
+                        </nz-input-number>
+                    </div>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control>
+                    <div nz-row>
+                        <div nz-col nzSpan="11">
+                            <button nz-button style="width: 100%;" nzType="default"
+                                (click)="handleCancelFactor()">Cancelar</button>
+                        </div>
+                        <div nz-col nzSpan="2"></div>
+                        <div nz-col nzSpan="11">
+                            <button nz-button style="width: 100%;" nzType="primary" nz-popconfirm nzPopconfirmTitle="¿Está seguro de guardar los cambios?" 
+                            nzPopconfirmPlacement="bottom" (nzOnConfirm)="guardarFactor()" (nzOnCancel)="cancel()"
+                            nzCancelText="No" nzOkText="Si">Guardar</button>
+                        </div>
+                    </div>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-container>
+</nz-modal>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+    <div class="ant-table-filter-dropdown">
+        <div class="search-box">
+            <input type="text" nz-input placeholder="Descripción" [(ngModel)]="searchValue"
+                (keydown.enter)="search()" />
+            <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
+                Buscar
+            </button>
+            <button nz-button nzSize="small" (click)="reset()">Limpiar</button>
+        </div>
+    </div>
+</nz-dropdown-menu>

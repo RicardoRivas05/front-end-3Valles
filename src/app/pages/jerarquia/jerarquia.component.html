@@ -1,0 +1,90 @@
+<nz-layout>
+    <nz-header>
+        <div nz-row>
+            <div nz-col nzSpan="20">
+                <h1> Jerarquias </h1>
+            </div>
+            <div nz-col nzSpan="4">
+                <button nz-button nzType="primary" (click)="showModal()" nzShape="round"><i nz-icon nzType="plus"
+                        nzTheme="outline"></i>Nueva Jerarquia</button>
+            </div>
+        </div>
+    </nz-header>
+    <nz-content>
+        <div class="tabla">
+            <nz-table #nzTable [nzData]="listOfDisplayData" nzTableLayout="fixed" nzPageSize="5">
+                <thead>
+                    <tr>
+                        <th nzWidth="60px" colspan="2">
+                            <nz-filter-trigger [(nzVisible)]="visible" [nzActive]="searchValue.length > 0" [nzDropdownMenu]="menu">
+                                <i nz-icon nzType="search"></i>
+                              </nz-filter-trigger>
+                        </th>
+                        <th *ngFor="let column of listOfColumns"
+                        [nzSortOrder]="column.sortOrder"
+                        [nzSortFn]="column.sortFn"
+                        [nzSortDirections]="column.sortDirections">{{column.name}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of nzTable.data">
+                        <td nzWidth="30px">
+                            <button nz-button nzType="primary" (click)="editar(data)" nzShape="circle">
+                                <i nz-icon nzType="edit" nzTheme="outline"></i>
+                            </button>
+                        </td>
+                        <td nzWidth="30px">
+                            <button nz-button nzType="primary" nz-popconfirm
+                                nzPopconfirmTitle="¿Está seguro de borrar el registro?" nzPopconfirmPlacement="bottom"
+                                (nzOnConfirm)="eliminar(data)" (nzOnCancel)="cancel()" nzShape="circle">
+                                <i nz-icon nzType="delete" nzTheme="outline"></i>
+                            </button>
+                        </td>
+                        <td>{{data.descripcion}}</td>
+                        <td>{{data.herencia}}</td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </nz-content>
+</nz-layout>
+
+<!-- Modal Formulario -->
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Configuración Jerarquia" (nzOnCancel)="handleCancel()">
+    <ng-container *nzModalContent>
+        <form nz-form nzLayout="vertical" (ngSubmit)="submitForm()" [formGroup]="validateForm">
+            <nz-form-item>
+                <nz-form-label>Descripción</nz-form-label>
+                <nz-form-control nzErrorTip="Por favor escriba el dato correcto!">
+                    <input nz-input formControlName="descripcion" placeholder="Escribe aquí..." />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label>Dependencia</nz-form-label>
+                <nz-form-control>
+                    <nz-select formControlName="dependenciaId" placeholder="Seleccione una..." nzShowSearch nzAllowClear>
+                        <nz-option *ngFor="let jerarquia of listaOfDependencia" [nzValue]="jerarquia.id"
+                            [nzLabel]="jerarquia.descripcion">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-container>
+    <div *nzModalFooter>
+        <button nz-button nzType="default" (click)="handleCancel()">Cancelar</button>
+        <button nz-button nzType="primary" (click)="guardar()" [disabled]="permiso">Guardar</button>
+    </div>
+</nz-modal>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+    <div class="ant-table-filter-dropdown">
+      <div class="search-box">
+        <input type="text" nz-input placeholder="Descripción" [(ngModel)]="searchValue" (keydown.enter)="search()"/>
+        <button nz-button nzSize="small" nzType="primary" (click)="search()"  class="search-button">
+          Buscar
+        </button>
+        <button nz-button nzSize="small" (click)="reset()">Limpiar</button>
+      </div>
+    </div>
+  </nz-dropdown-menu>

@@ -1,0 +1,26 @@
+<button nz-button nzType="primary" nzSize="small"><i nz-icon nzTheme="outline" nzType="plus" (click)="showModal()"></i></button>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Editar" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <ng-container *nzModalContent>
+        <form nz-form [formGroup]="validateForm" nzLayout="horizontal">
+          <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>Grupo</nz-form-label>
+                    <input nz-input formControlName="id" style="width: 470px;"/>
+                </nz-form-item>
+            </div>
+        </div>
+        <div nz-row [nzGutter]="8">
+          <div nz-col nzSpan="24">
+              <nz-form-item>
+                  <nz-form-label>Centro de Costos</nz-form-label>
+                  <input nz-input formControlName="id" style="width: 470px;"/>
+              </nz-form-item>
+          </div>
+      </div>
+        </form>    
+
+    </ng-container>
+</nz-modal>
+
+

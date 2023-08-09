@@ -1,0 +1,123 @@
+.encabezado {
+    background-color: #022242;
+    display: flex;
+    align-content: center;
+    justify-content: flex-start;
+    padding: 5px;
+}
+
+.title {
+    color: white;
+    font-size: 30px;
+    font-weight: 600;
+    height: 100%;
+    margin: auto;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.container-opciones {
+    display: grid;
+    grid-template-columns: 0.7fr 1fr 1fr 0.5fr;
+    grid-template-rows: 1fr;
+    gap: 5px 10px;
+    grid-template-areas: ". . . .";
+    width: 100%;
+}
+
+nz-select {
+    width: 100%;
+}
+
+.botones {
+    display: flex;
+    align-content: center;
+    justify-content: space-around;
+}
+
+.container-datos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 5px 10px;
+    grid-template-areas: ". .";
+}
+
+.container-info {
+    display: grid;
+    grid-template-columns: 0.6fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas: ". .";
+    background-color: #f1f1f1;
+    height: 65px;
+}
+
+.nombre-dato {
+    font-weight: bold;
+    font-size: 11px;
+    margin-left: 17px;
+}
+
+p {
+    font-size: 11px;
+    margin: 0;
+}
+
+.titulo-separador {
+    background-color: #d4d4d4;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 5px;
+}
+
+.container-lecturas {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 5px 10px;
+    grid-template-areas: ". . . . .";
+    width: 95%;
+    margin: auto;
+}
+
+.titulo-lecturas {
+    font-size: 14px;
+    font-weight: bold;
+    color: #4e4e4e;
+}
+
+.container-detalle {
+    display: grid;
+    grid-template-columns: 0.3fr 1.3fr;
+    grid-template-rows: 1fr;
+    gap: 5px 10px;
+    grid-template-areas: ". .";
+    height: 100%;
+    width: 100%;
+}
+/*
+th,
+td {
+    width: 100%;
+    font-size: 13px;
+    padding: 0px 10px 0px 10px;
+}*/
+
+th {
+    background-color: #578f61b0;
+}
+
+.div-valores {
+    background-color: #cfebff;
+    border-radius: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.valor {
+    font-size: 24px;
+    font-weight: bold;
+    color: #04446a;
+}
