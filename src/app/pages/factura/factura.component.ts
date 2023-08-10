@@ -219,13 +219,15 @@ export class FacturaComponent implements OnInit {
         item.contieneRollover = false;
       });
 
+
         for (let i = 0; i < info.length; i++) {
-          promises.push(this.RolloverInfor.getexistenciaRollover(info[i], this.fecha1, this.fecha2).toPromise());
+          const medidorCodificado = encodeURIComponent(info[i])
+          promises.push(this.RolloverInfor.getexistenciaRollover(medidorCodificado, this.fecha1, this.fecha2).toPromise());
         }
 
         return Promise.all(promises)
           .then(results => {
-
+            console.log("results: ", results)
             results.forEach(datos => {
               if (datos && datos.length > 0) {
                 const medidorConRollover = this.dataFactura.find(item => datos.some(rollover => item.descripcion === rollover.descripcion));
@@ -288,18 +290,18 @@ export class FacturaComponent implements OnInit {
             }
 
             this.totalMedicion = 0;
+            console.log(this.dataFactura)
             this.dataFactura.forEach(data => {
               const medicion = data.contieneRollover
               ?((data.final - data.lecturaNueva) - (data.inicial-data.lecturaAnterior)) * data.operacion
               :(data.final - data.inicial) * data.operacion
 
               const generacion = data.Generacion * data.operacion;
-              console.log(data.Enee, "%",data.operacion)
-              // console.log("Calculo: ",data.Enee*data.operacion+100)
               const enee = (data.Enee * data.operacion) + 100;
 
               this.totalMedicion += medicion
               this.totalGeneracion += generacion
+              console.log(this.totalMedicion, "%",medicion)
               this.totalEnee += enee;
             });
 
