@@ -6,6 +6,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { DatePipe } from '@angular/common';
 import { DatosService } from 'src/app/servicios/datos.service';
 
+
 @Component({
   selector: 'app-medidor',
   templateUrl: './medidor.component.html',
@@ -562,7 +563,7 @@ export class MedidorComponent implements OnInit {
     this.medidorService.getVariablesPME(this.idMedidor).toPromise().then(
       (data: variableModel[]) => {
         this.listOfVariable = data.map((x)=> {return {"variableId":x.id, "descripcion":x.descripcion}});
-     
+
         this.datosService.getDatosId(String(data.map((x) => x.id))).toPromise().then(
           (data: any[]) => {
             let dataM= data.map((x)=>{
@@ -578,7 +579,7 @@ export class MedidorComponent implements OnInit {
       }
     );
     /*     this.idMedidor = data.id;
-   
+
          this.medidorService.getVariable().toPromise().then(
            (data: variableModel[]) => {
              this.listOfVariable = data;
@@ -588,7 +589,7 @@ export class MedidorComponent implements OnInit {
              console.log(error);
            }
          );
-   
+
          this.medidorService.getVariablePME().toPromise().then(
            (data: variableModel[]) => {
              this.listOfVariablePME = data;
@@ -598,7 +599,7 @@ export class MedidorComponent implements OnInit {
              console.log(error);
            }
          );
-   
+
          this.medidorService.getVariablesPME(this.idMedidor).toPromise().then(
            (data: variableModel[]) => {
              this.listOfPME2 = data;

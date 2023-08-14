@@ -290,8 +290,8 @@ export class FacturaComponent implements OnInit {
             }
 
             this.totalMedicion = 0;
-            console.log(this.dataFactura)
             this.dataFactura.forEach(data => {
+              console.log(this.dataFactura)
               const medicion = data.contieneRollover
               ?((data.final - data.lecturaNueva) - (data.inicial-data.lecturaAnterior)) * data.operacion
               :(data.final - data.inicial) * data.operacion
@@ -301,7 +301,6 @@ export class FacturaComponent implements OnInit {
 
               this.totalMedicion += medicion
               this.totalGeneracion += generacion
-              console.log(this.totalMedicion, "%",medicion)
               this.totalEnee += enee;
             });
 

@@ -119,7 +119,7 @@
                         <!-- <td nzAlign="right"> {{ (item.final - item.inicial)*item.operacion | abs | number:'1.1-2':'en_US' }}</td> -->
                         <td nzAlign="right">
                           <ng-container *ngIf="item.contieneRollover; else sinRollover">
-                            {{ ((item.final - item.lecturaNueva) - (item.inicial - item.lecturaAnterior)) * item.operacion | abs | number:'1.1-2':'en_US' }}
+                            {{ (item.final - item.lecturaNueva) + ( item.lecturaAnterior - item.inicial) | abs | number:'1.1-2':'en_US' }}
                           </ng-container>
                           <ng-template #sinRollover>
                             {{ (item.final - item.inicial) * item.operacion | abs | number:'1.1-2':'en_US' }}
