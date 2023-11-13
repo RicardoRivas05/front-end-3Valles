@@ -40,4 +40,5 @@ export class FacturaService {
   getVenta(f1: string, f2: string) {
     return this.http.get(`${apiUrl}ventaEnee?f1=${f1}&f2=${f2}`)
   }
+
 }

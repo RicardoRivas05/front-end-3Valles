@@ -1,203 +1,218 @@
 <div class="container-opciones">
-    <nz-input-group nzAddOnBefore="Grupo" nzSize="small">
-        <nz-select [(ngModel)]="centroCosto" nzSize="small" (ngModelChange)="changeCentroCosto($event)"
-            nzPlaceHolder="Seleccione...">
-            <nz-option *ngFor="let item of listOfCentroCosto" [nzLabel]="item.nombre" [nzValue]="item">
-            </nz-option>
-        </nz-select>
-    </nz-input-group>
-    <!--
-    <nz-input-group nzAddOnBefore="Centro de Costo" nzSize="small">
-        <nz-select [(ngModel)]="grupo" nzSize="small" nzPlaceHolder="Seleccione...">
-            <nz-option *ngFor="let item of listOfGrupoFiltrado" [nzLabel]="item.nombre" [nzValue]="item"></nz-option>
-        </nz-select>
-    </nz-input-group>
-    -->
-    <nz-input-group nzAddOnBefore="Rango de Tiempo" nzSize="small">
-        <nz-select (ngModelChange)="changeRango($event)" nzSize="small" [(ngModel)]="tiempo">
-            <nz-option-group nzLabel="Especificar Fecha">
-                <nz-option nzLabel="Inicial y Final" nzValue="11"></nz-option>
-            </nz-option-group>
-            <nz-option-group nzLabel="Rangos Hasta la Fecha">
-                <nz-option nzLabel="Hoy" nzValue="1"></nz-option>
-                <nz-option nzLabel="Ayer" nzValue="2"></nz-option>
-                <nz-option nzLabel="Desde ayer" nzValue="3"></nz-option>
-                <nz-option nzLabel="Semana hasta la fecha" nzValue="4"></nz-option>
-                <nz-option nzLabel="Este mes hasta la fecha" nzValue="8"></nz-option>
-                <nz-option nzLabel="Año hasta la fecha" nzValue="5"></nz-option>
-            </nz-option-group>
-            <nz-option-group nzLabel="Fechas Pasadas">
-                <nz-option nzLabel="Ultima semana" nzValue="6"></nz-option>
-                <nz-option nzLabel="Ultimas 2 semanas" nzValue="7"></nz-option>
-                <nz-option nzLabel="Ultimo mes" nzValue="9"></nz-option>
-                <nz-option nzLabel="Ultimo año" nzValue="10"></nz-option>
-            </nz-option-group>
-        </nz-select>
-    </nz-input-group>
-    <nz-input-group id="fecha" nzAddOnBefore="Fecha" nzSize="small" *ngIf="visibleFecha">
-        <nz-range-picker nzSize="small" nzFormat="yyyy-MM-dd HH:mm" [(ngModel)]="fecha"></nz-range-picker>
-    </nz-input-group>
-    <div class="botones">
-        <button nz-button nzType="primary" nzSize="small" (click)="mostrar()"
-            style=" background-color: #027519; border-color: #027519; ">
-            <i nz-icon nzType="search"></i>
-            Mostrar
-        </button>
-        <button nz-button nzType="primary" nzSize="small" (click)="imprimir()"
-            style=" background-color: #c41a1a; border-color: #c41a1a; ">
-            <i nz-icon nzType="printer"></i>
-            Imprimir
-        </button>
-    </div>
+  <nz-input-group nzAddOnBefore="Grupo" nzSize="small">
+      <nz-select [(ngModel)]="centroCosto" nzSize="small" (ngModelChange)="changeCentroCosto($event)"
+          nzPlaceHolder="Seleccione...">
+          <nz-option *ngFor="let item of listOfCentroCosto" [nzLabel]="item.nombre" [nzValue]="item">
+          </nz-option>
+      </nz-select>
+  </nz-input-group>
+  <!--
+  <nz-input-group nzAddOnBefore="Centro de Costo" nzSize="small">
+      <nz-select [(ngModel)]="grupo" nzSize="small" nzPlaceHolder="Seleccione...">
+          <nz-option *ngFor="let item of listOfGrupoFiltrado" [nzLabel]="item.nombre" [nzValue]="item"></nz-option>
+      </nz-select>
+  </nz-input-group>
+  -->
+  <nz-input-group nzAddOnBefore="Rango de Tiempo" nzSize="small">
+      <nz-select (ngModelChange)="changeRango($event)" nzSize="small" [(ngModel)]="tiempo">
+          <nz-option-group nzLabel="Especificar Fecha">
+              <nz-option nzLabel="Inicial y Final" nzValue="11"></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="Rangos Hasta la Fecha">
+              <nz-option nzLabel="Hoy" nzValue="1"></nz-option>
+              <nz-option nzLabel="Ayer" nzValue="2"></nz-option>
+              <nz-option nzLabel="Desde ayer" nzValue="3"></nz-option>
+              <nz-option nzLabel="Semana hasta la fecha" nzValue="4"></nz-option>
+              <nz-option nzLabel="Este mes hasta la fecha" nzValue="8"></nz-option>
+              <nz-option nzLabel="Año hasta la fecha" nzValue="5"></nz-option>
+          </nz-option-group>
+          <nz-option-group nzLabel="Fechas Pasadas">
+              <nz-option nzLabel="Ultima semana" nzValue="6"></nz-option>
+              <nz-option nzLabel="Ultimas 2 semanas" nzValue="7"></nz-option>
+              <nz-option nzLabel="Ultimo mes" nzValue="9"></nz-option>
+              <nz-option nzLabel="Ultimo año" nzValue="10"></nz-option>
+          </nz-option-group>
+      </nz-select>
+  </nz-input-group>
+  <nz-input-group id="fecha" nzAddOnBefore="Fecha" nzSize="small" *ngIf="visibleFecha">
+      <nz-range-picker nzSize="small" nzFormat="yyyy-MM-dd HH:mm" [(ngModel)]="fecha"></nz-range-picker>
+  </nz-input-group>
+  <div class="botones">
+      <button nz-button nzType="primary" nzSize="small" (click)="mostrar()"
+          style=" background-color: #027519; border-color: #027519; ">
+          <i nz-icon nzType="search"></i>
+          Mostrar
+      </button>
+      <button nz-button nzType="primary" nzSize="small" (click)="imprimir()"
+          style=" background-color: #c41a1a; border-color: #c41a1a; ">
+          <i nz-icon nzType="printer"></i>
+          Imprimir
+      </button>
+  </div>
 </div>
 <br>
 <div id="content" style="width: 90%; margin: auto;" *ngIf="visible">
-    <div class="encabezado">
-        <img style="width: 7%;" src="assets/logo.svg" alt="">
-        <p class="title">Factura</p>
-    </div>
-    <br>
+  <div class="encabezado">
+      <img style="width: 7%;" src="assets/logo.svg" alt="">
+      <p class="title">Factura</p>
+  </div>
+  <br>
+  <div class="titulo-separador">
+      <p style="font-size: 20px; font-weight: bold;">Datos de factura</p>
+      <p style="font-size: 20px; font-weight: bold;">Datos del titular</p>
+  </div>
+  <div class="container-datos">
+      <div class="container-info">
+          <div>
+              <p class="nombre-dato"> GRUPO: </p>
+              <p class="nombre-dato"> NÚMERO DE COMPAÑIA: </p>
+              <p class="nombre-dato"> NÚMERO DE FACTURA: </p>
+
+          </div>
+          <div>
+              <div *ngIf="grupo; else labelCentro">
+                  <p>{{grupo.nombre }}</p>
+              </div>
+              <p> 00000 </p>
+              <p> {{ facturaNo }} </p>
+          </div>
+      </div>
+      <div class="container-info">
+          <div>
+              <p class="nombre-dato"> FECHA EMISIÓN: </p>
+              <p class="nombre-dato"> PERIODO: </p>
+              <p class="nombre-dato"> DÍAS DE FACTURACÓN: </p>
+          </div>
+          <div>
+              <p> {{ fechaDia | date: 'yyyy-MM-dd HH:mm a'}} </p>
+              <p> {{ fecha1 | date: 'yyyy-MM-dd HH:mm a'}} al {{ fecha2 | date: 'yyyy-MM-dd HH:mm a'}}</p>
+              <p> {{dias}} </p>
+          </div>
+      </div>
+  </div>
+  <br>
+  <div class="titulo-separador">
+      <p style="font-size: 20px; font-weight: bold;">Detalle de Consumo de Energía</p>
+  </div>
+  <div style="width: 98%; margin: auto;">
+      <div>
+          <nz-table #consumoTable [nzData]="dataFactura" nzSize="small" nzBordered [nzFrontPagination]="false">
+              <thead>
+                  <tr nzAlign="center">
+                      <th nzWidth="500px" rowspan="2">Medidor</th>
+                      <th colspan="2">Lecturas</th>
+                      <th rowspan="2">Consumo (kWh)</th>
+                      <th colspan="4">Origen de la Energía</th>
+                  </tr>
+                  <tr nzAlign="center">
+                      <th>Inicial (kWh)</th>
+                      <th>Final (kWh)</th>
+                      <th>Porcentaje Generación (kWh)</th>
+                      <th>Porcentaje Red Publica (kWh)</th>
+                      <th>Porcentaje L385 (kWh)</th>
+                      <th>Porcentaje P.E (kWh)</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr  *ngFor="let item of dataFactura; let i = index">
+                      <td> {{item.descripcion}}</td>
+                      <td nzAlign="right"> {{ item.inicial | number:'1.1-2':'en_US'}} </td>
+                      <td nzAlign="right"> {{ item.final | number:'1.1-2':'en_US'}} </td>
+                      <td nzAlign="right">
+                        <ng-container *ngIf="item.contieneRollover; else sinRollover">
+                          {{ (item.final - item.lecturaNueva) + ( item.lecturaAnterior - item.inicial) | abs | number:'1.1-2':'en_US' }}
+                        </ng-container>
+                        <ng-template #sinRollover>
+                          {{ (item.final - item.inicial) * item.operacion | abs | number:'1.1-2':'en_US' }}
+                        </ng-template>
+                      </td>
+
+                      <td nzAlign="right">
+                        <ng-container *ngIf="item.contieneRollover; else sinRO">
+                          {{ (((item.final - item.lecturaNueva) + ( item.lecturaAnterior - item.inicial)) + (item.Enee * item.operacion))| abs | number:'1.1-2':'en_US' }}
+                        </ng-container>
+                        <ng-template #sinRO>
+                          {{ ((item.Generacion * item.operacion))| abs | number:'1.1-2':'en_US' }}
+                        </ng-template>
+                      </td>
+                      <td nzAlign="right"> {{ item.Enee * item.operacion| abs | number:'1.1-2':'en_US'}} </td>
+                      <td nzAlign="right">{{ item.linea385| abs | number:'1.1-2':'en_US'}}</td>
+                      <td nzAlign="right">{{ item.plantaE| abs | number:'1.1-2':'en_US'}}</td>
+                  </tr>
+              </tbody>
+              <tfoot>
+                  <tr style="background-color: #578f61b0; text-align: right; font-weight: bold;">
+                      <td colspan="3">Total de Energia (kWh)</td>
+                      <td nzAlign="right"> {{ totalMedicion | abs | number:'1.1-2':'en_US' }} </td>
+                      <td nzAlign="right"> {{ totalGeneracion | abs| number:'1.1-2':'en_US' }} </td>
+                      <td nzAlign="right"> {{ totalEnee | abs | number:'1.1-2':'en_US' }} </td>
+                      <td nzAlign="right">{{ totalLinea385 | abs | number:'1.1-2':'en_US' }}</td>
+                      <td nzAlign="right">{{ totalPlantaE | abs | number:'1.1-2':'en_US' }}</td>
+                  </tr>
+              </tfoot>
+          </nz-table>
+      </div>
+  </div>
+  <div style="width: 95%; margin: auto;" *ngIf="boolCC">
     <div class="titulo-separador">
-        <p style="font-size: 20px; font-weight: bold;">Datos de factura</p>
-        <p style="font-size: 20px; font-weight: bold;">Datos del titular</p>
+        <p style="font-size: 20px; font-weight: bold;">Distribución Centro de Costos</p>
     </div>
-    <div class="container-datos">
-        <div class="container-info">
-            <div>
-                <p class="nombre-dato"> GRUPO: </p>
-                <p class="nombre-dato"> NÚMERO DE COMPAÑIA: </p>
-                <p class="nombre-dato"> NÚMERO DE FACTURA: </p>
+    <div class="container-detalle">
+        <nz-list nzItemLayout="horizontal">
+            <nz-list-item *ngFor="let item of factores">
+                <nz-list-item-meta>
+                    <nz-list-item-meta-title>
+                        {{ item.nombre }}  <nz-tag nzColor="processing">
+                            <span>{{ item.valor * 100 | number:'1.1-2':'en_US'}} %</span>
+                        </nz-tag>
+                    </nz-list-item-meta-title>
 
-            </div>
-            <div>
-                <div *ngIf="grupo; else labelCentro">
-                    <p>{{grupo.nombre }}</p>
-                </div>
-                <p> 00000 </p>
-                <p> {{ facturaNo }} </p>
-            </div>
-        </div>
-        <div class="container-info">
-            <div>
-                <p class="nombre-dato"> FECHA EMISIÓN: </p>
-                <p class="nombre-dato"> PERIODO: </p>
-                <p class="nombre-dato"> DÍAS DE FACTURACÓN: </p>
-            </div>
-            <div>
-                <p> {{ fechaDia | date: 'yyyy-MM-dd HH:mm a'}} </p>
-                <p> {{ fecha1 | date: 'yyyy-MM-dd HH:mm a'}} al {{ fecha2 | date: 'yyyy-MM-dd HH:mm a'}}</p>
-                <p> {{dias}} </p>
-            </div>
-        </div>
-    </div>
-    <br>
-    <div class="titulo-separador">
-        <p style="font-size: 20px; font-weight: bold;">Detalle de Consumo de Energía</p>
-    </div>
-    <div style="width: 98%; margin: auto;">
-        <div>
-            <nz-table #consumoTable [nzData]="dataFactura" nzSize="small" nzBordered [nzFrontPagination]="false">
-                <thead>
-                    <tr nzAlign="center">
-                        <th nzWidth="500px" rowspan="2">Medidor</th>
-                        <th colspan="2">Lecturas</th>
-                        <th rowspan="2">Consumo (kWh)</th>
-                        <th colspan="2">Origen de la Energía</th>
-                    </tr>
-                    <tr nzAlign="center">
-                        <th>Inicial (kWh)</th>
-                        <th>Final (kWh)</th>
-                        <th>Porcentaje Generación (kWh)</th>
-                        <th>Porcentaje Red Publica (kWh)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr  *ngFor="let item of dataFactura; let i = index">
-                        <td> {{item.descripcion}}</td>
-                        <td nzAlign="right"> {{ item.inicial | number:'1.1-2':'en_US'}} </td>
-                        <td nzAlign="right"> {{ item.final | number:'1.1-2':'en_US'}} </td>
-                        <!-- <td nzAlign="right"> {{ (item.final - item.inicial)*item.operacion | abs | number:'1.1-2':'en_US' }}</td> -->
-                        <td nzAlign="right">
-                          <ng-container *ngIf="item.contieneRollover; else sinRollover">
-                            {{ (item.final - item.lecturaNueva) + ( item.lecturaAnterior - item.inicial) | abs | number:'1.1-2':'en_US' }}
-                          </ng-container>
-                          <ng-template #sinRollover>
-                            {{ (item.final - item.inicial) * item.operacion | abs | number:'1.1-2':'en_US' }}
-                          </ng-template>
-                        </td>
-                        <td nzAlign="right"> {{ item.Generacion * item.operacion | abs | number:'1.1-2':'en_US' }} </td>
-                        <td nzAlign="right"> {{ item.Enee * item.operacion | abs | number:'1.1-2':'en_US'}} </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr style="background-color: #578f61b0; text-align: right; font-weight: bold;">
-                        <td colspan="3">Total de Energia (kWh)</td>
-                        <td nzAlign="right"> {{ totalMedicion | abs | number:'1.1-2':'en_US' }} </td>
-                        <td nzAlign="right"> {{ totalGeneracion | abs| number:'1.1-2':'en_US' }} </td>
-                        <td nzAlign="right"> {{ totalEnee | abs | number:'1.1-2':'en_US' }} </td>
-                    </tr>
-                </tfoot>
-            </nz-table>
-        </div>
-    </div>
-    <div style="width: 95%; margin: auto;" *ngIf="boolCC">
-        <div class="titulo-separador">
-            <p style="font-size: 20px; font-weight: bold;">Distribución Centro de Costos</p>
-        </div>
-        <div class="container-detalle">
-            <nz-list nzItemLayout="horizontal">
-                <nz-list-item *ngFor="let item of factores">
-                    <nz-list-item-meta>
-                        <nz-list-item-meta-title>
-                            {{ item.nombre }}  <nz-tag nzColor="processing">
-                                <span>{{ item.valor * 100 | number:'1.1-2':'en_US'}} %</span>
-                            </nz-tag>
-                        </nz-list-item-meta-title>
+                    <nz-list-item-meta-description>
+                        {{ item.valor * totalMedicion | number:'1.1-2':'en_US'}} kWh
+                    </nz-list-item-meta-description>
+                </nz-list-item-meta>
+            </nz-list-item>
 
-                        <nz-list-item-meta-description>
-                            {{ item.valor * totalMedicion | number:'1.1-2':'en_US'}} kWh
-                        </nz-list-item-meta-description>
-                    </nz-list-item-meta>
-                </nz-list-item>
-
-            </nz-list>
-            <div nz-row nzJustify="space-around" nzAlign="middle"><!--
-                <div style="height: 80%; width: 80%; margin: auto;">
-                    <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-                        [legend]="barChartLegend" [chartType]="barChartType">
-                    </canvas>
-                </div>-->
-                <div style="width: 49%; margin: auto;">
-                    <canvas baseChart [datasets]="ChartData" [labels]="ChartLabels" [options]="ChartOptions"
-                        [chartType]="ChartType"></canvas>
-                </div>
-                <div style="width: 49%; margin: auto;">
-                    <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-                        [chartType]="barChartType"></canvas>
-                </div>
+        </nz-list>
+        <div nz-row nzJustify="space-around" nzAlign="middle"><!--
+            <div style="height: 80%; width: 80%; margin: auto;">
+                <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+                    [legend]="barChartLegend" [chartType]="barChartType">
+                </canvas>
+            </div>-->
+            <div style="width: 49%; margin: auto;">
+                <canvas baseChart [datasets]="ChartData" [labels]="ChartLabels" [options]="ChartOptions"
+                    [chartType]="ChartType"></canvas>
+            </div>
+            <div style="width: 49%; margin: auto;">
+                <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+                    [chartType]="barChartType"></canvas>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 
 <div *ngIf="!visible" style="display: flex; flex-direction: column; align-items: center;">
-    <img style="width: 25%;" src="assets/logo.svg" alt="">
-    <p style="font-family: 'Roboto', sans-serif;font-size: 40px; color: #8a8a8a;">Factura</p>
+<img style="width: 25%;" src="assets/logo.svg" alt="">
+<p style="font-family: 'Roboto', sans-serif;font-size: 40px; color: #8a8a8a;">Factura</p>
 </div>
 
 <ngx-spinner bdColor="rgba(187,218,255,0.8)" size="medium" color="#0061aa" type="triangle-skew-spin"
-    [fullScreen]="true">
-    <p style="color: white"> Preparando... </p>
+[fullScreen]="true">
+<p style="color: white"> Preparando... </p>
 </ngx-spinner>
 
+
+
 <ng-template #labelCentro>
-    <p>{{centroCosto.nombre}}</p>
+<p>{{centroCosto.nombre}}</p>
 </ng-template>
 
 <ng-template #sinGrupo>
-    <div style="width: 100%; margin: auto;" class="div-valores">
-        <p class="titulo-lecturas">Total</p>
-        <p class="valor"> {{ totalMedicion | number:'1.1-2':'en_US'}} kWh</p>
-    </div>
+<div style="width: 100%; margin: auto;" class="div-valores">
+    <p class="titulo-lecturas">Total</p>
+    <p class="valor"> {{ totalMedicion | number:'1.1-2':'en_US'}} kWh</p>
+</div>
 </ng-template>
