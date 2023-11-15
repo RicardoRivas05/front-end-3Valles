@@ -219,9 +219,13 @@ export class FacturaComponent implements OnInit {
         let dataRollover=[]
         let promises= []
 
-        for(let i=0;i<infoConsumo.length;i++){
-          info.push(infoConsumo[i].descripcion);
+        for (let i = 0; i < infoConsumo.length; i++) {
+          for (let j = 0; j < infoConsumo[i].length; j++) {
+            console.log(infoConsumo[i][j].descripcion)
+            info.push(infoConsumo[i][j].descripcion);
+          }
         }
+
 
         this.dataFactura.forEach(item => {
           item.contieneRollover = false;
@@ -230,12 +234,14 @@ export class FacturaComponent implements OnInit {
 
           for (let i = 0; i < info.length; i++) {
             const medidorCodificado = encodeURIComponent(info[i])
+            // console.log(info[i])
             promises.push(this.RolloverInfor.getexistenciaRollover(medidorCodificado, this.fecha1, this.fecha2).toPromise());
           }
 
           return Promise.all(promises)
             .then(results => {
               results.forEach(datos => {
+                // console.log('Datos: ', datos)
                 if (datos && datos.length > 0) {
                   const medidorConRollover = this.dataFactura.find(item => datos.some(rollover => item.descripcion === rollover.descripcion));
 
@@ -312,6 +318,7 @@ export class FacturaComponent implements OnInit {
 
                   this.totalMedicion += medicion;
                   this.totalGeneracion += generacion;
+                  console.log(this.totalGeneracion)
                   this.totalEnee += enee;
                   this.totalPlantaE += plantaE;
                   this.totalLinea385 += linea385;

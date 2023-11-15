@@ -36,6 +36,7 @@ export class DashboardComponent implements OnInit {
   dataFactura: any;
   contieneRollover: boolean = false;
   calculosNuevos: any;
+  rolloverVentaEnee: any;
 
 
   backgroundColor = ["#4FC3F7", "#E57373", "#FFF176", "#CE93D8", "#F06292", "#FFAB91", "#18FFFF", "#AED581", "#80CBC4", "#81F7F3", "#F79F81", "#F781F3", "#F2F5A9", "#DC90A3", "#EF517B", "#04B4AE", "#BDBDBD", "#FA8258", "#F5A9D0", "#FCCBC", "#FFE0B2", "#CFD8DC", "#FFD180", "#BCAAA4", "#EEEEEE", "#82B1FF", "#B2FF59", "#FF4081", "#C5CAE9", "#EEFF41"]
@@ -135,29 +136,32 @@ export class DashboardComponent implements OnInit {
       this.perdida = 0;
 
       this.serviceCentroCosto.getCentroCosto()
-      .toPromise()
-      .then((data: any) => {
-        return Promise.all<number>(data.map(centroCosto => {
-          return this.serviceFactura.getConsumoMedidores(centroCosto.id, this.fecha1, this.fecha2)
-            .toPromise()
-            .then((datosConsumo: any) => {
-              this.dataFactura = datosConsumo;
-              return this.dataFactura.reduce((sum, x) => sum + x.plantaE, 0);
-            });
-        }));
-      })
-      .then((sums: number[]) => {
-        console.log(sums);
-
-        let totalPlantaE = sums.reduce((sum, current) => sum + current);
-        console.log('Total Planta E: ', totalPlantaE)
-
-        this.serviceFactura.getGeneracion(false, this.fecha1, this.fecha2)
+  .toPromise()
+  .then((data: any) => {
+    return Promise.all<number>(data.map(centroCosto => {
+      return this.serviceFactura.getConsumoMedidores(centroCosto.id, this.fecha1, this.fecha2)
         .toPromise()
-        .then((datos:any) =>{
-          this.dataGeneracion = datos;
-          this.generacion = datos.map(x => x.final - x.inicial).reduce(
-            (previousValue, currentValue) => previousValue + currentValue)
+        .then((datosConsumo: any) => {
+          this.dataFactura = datosConsumo;
+          return this.dataFactura.reduce((sum, x) => sum + x.plantaE, 0);
+        })
+        .catch(error => {
+          console.error('Error en getConsumoMedidores:', error);
+          // Puedes propagar el error usando Promise.reject
+          return Promise.reject(error);
+        });
+    }));
+  })
+  .then((sums: number[]) => {
+
+    let totalPlantaE = sums.reduce((sum, current) => sum + current);
+
+    this.serviceFactura.getGeneracion(false, this.fecha1, this.fecha2)
+      .toPromise()
+      .then((datos: any) => {
+        this.dataGeneracion = datos;
+        this.generacion = datos.map(x => x.final - x.inicial).reduce(
+          (previousValue, currentValue) => previousValue + currentValue);
 
         // Agregar la suma total como una entrada adicional
         this.dataGeneracion.push({
@@ -165,8 +169,6 @@ export class DashboardComponent implements OnInit {
           'inicial': 0,
           'final': totalPlantaE
         });
-
-        console.log(this.dataGeneracion)
 
         this.ChartGenetOptions = {
           scaleShowVerticalLines: true,
@@ -194,14 +196,17 @@ export class DashboardComponent implements OnInit {
             borderColor: this.backgroundColor
           }
         ];
-        })
       })
       .catch(error => {
-        console.error('Error:', error);
+        console.error('Error en getGeneracion:', error);
+        // Puedes propagar el error usando Promise.reject
+        return Promise.reject(error);
       });
-
-
-
+  })
+  .catch(error => {
+    console.error('Error en getCentroCosto:', error);
+    // Manejar el error general aquí
+  });
 
       //******************************** */
 
@@ -213,15 +218,41 @@ export class DashboardComponent implements OnInit {
 
           })
 
-
-
-        this.serviceFactura.getVenta(this.fecha1, this.fecha2)
+          this.serviceFactura.getVenta(this.fecha1, this.fecha2)
           .toPromise()
           .then((datos: any) => {
+            try {
+              this.serviceFactura.getexistenciaRollover('Venta a ENEE', this.fecha1, this.fecha2)
+                .toPromise()
+                .then((data: any) => {
+                  this.rolloverVentaEnee = data;
 
-            this.ventaEnee = datos.map(x => x.final - x.inicial).reduce(
-              (previousValue, currentValue) => previousValue + currentValue)
+                  if (data.length > 0) {
+                    this.ventaEnee = datos.map(x =>
+                      ((x.final - data[0].lecturaNueva) + (data[0].lecturaAnterior - x.inicial))
+                    );
+                  } else {
+                    this.ventaEnee = datos.map(x => x.final - x.inicial).reduce(
+                      (previousValue, currentValue) => previousValue + currentValue
+                    );
+                  }
+
+                  // Extrae el valor del array si es un solo valor
+                  this.ventaEnee = Array.isArray(this.ventaEnee) ? this.ventaEnee[0] : this.ventaEnee;
+                })
+                .catch(error => {
+                  console.error("Error obteniendo existencia de Rollover para 'Venta a ENEE': ", error);
+                });
+            } catch (error) {
+              console.error("Error en el bloque try-catch: ", error);
+            }
           })
+          .catch(error => {
+            console.error("Error obteniendo datos de venta: ", error);
+          });
+
+
+
 
           this.serviceCentroCosto.getCentroCosto()
           .toPromise()
@@ -258,6 +289,7 @@ export class DashboardComponent implements OnInit {
                   let consumo = 0;
 
                   for (let i = 0; i < infoConsumo.length; i++) {
+                    console.log(infoConsumo)
                     info.push(infoConsumo[i].descripcion);
                   }
 

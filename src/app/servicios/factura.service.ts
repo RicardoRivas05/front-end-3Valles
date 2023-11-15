@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import 'tslib';
+import { HttpHeaders } from '@angular/common/http';
 
 const apiUrl = environment.apiUrl;
 
@@ -18,7 +19,10 @@ export class FacturaService {
   */
 
   getConsumoMedidores(cc: number, f1: string, f2: string) {
-    return this.http.get(`${apiUrl}consumo-medidores?cc=${cc}&f1=${f1}&f2=${f2}`)
+    const formattedF1 = f1.toString();
+  const formattedF2 = f2.toString();
+  const headers = new HttpHeaders().set('timeout', '30000')
+  return this.http.get(`${apiUrl}consumo-medidores?cc=${cc}&f1=${formattedF1}&f2=${formattedF2}`, { headers });
   }
 
   getRollOvers(){
