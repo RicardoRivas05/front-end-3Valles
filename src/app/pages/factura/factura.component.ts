@@ -204,7 +204,6 @@ export class FacturaComponent implements OnInit {
       .toPromise()
       .then((datos: any) => {
         this.dataFactura = datos
-        console.log(datos)
         let infoConsumo=[]
         this.totalMedicion = 0
         this.totalGeneracion = 0
@@ -221,7 +220,6 @@ export class FacturaComponent implements OnInit {
 
         for (let i = 0; i < infoConsumo.length; i++) {
           for (let j = 0; j < infoConsumo[i].length; j++) {
-            console.log(infoConsumo[i][j].descripcion)
             info.push(infoConsumo[i][j].descripcion);
           }
         }
@@ -313,12 +311,11 @@ export class FacturaComponent implements OnInit {
                   const linea385 = data.linea385;
 
                   const generacion = data.contieneRollover
-                    ? (((data.final - data.lecturaNueva) + (data.lecturaAnterior - data.inicial)) * data.operacion)
+                    ? ((((data.final - data.lecturaNueva) + (data.lecturaAnterior - data.inicial)) - data.Enee)  * data.operacion)
                     : (data.Generacion * data.operacion);
 
                   this.totalMedicion += medicion;
                   this.totalGeneracion += generacion;
-                  console.log(this.totalGeneracion)
                   this.totalEnee += enee;
                   this.totalPlantaE += plantaE;
                   this.totalLinea385 += linea385;
@@ -413,8 +410,7 @@ const options = {
   scale: 3
 };
 
-
-
+// const doc = new jsPDF('p', 'mm', [210, 297], true);
 const doc = new jsPDF('p', 'mm', 'a4', true);
 
 html2canvas(div, options).then((canvas) => {
@@ -427,7 +423,6 @@ html2canvas(div, options).then((canvas) => {
   const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
   (doc as any).addImage(img, 'PNG', bufferX, bufferY, pdfWidth, pdfHeight, undefined, 'FAST');
-
   return doc;
 }).then((doc) => {
   doc.save(`Factura.pdf`);

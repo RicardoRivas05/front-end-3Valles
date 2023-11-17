@@ -118,9 +118,10 @@
                       <td> {{item.descripcion}}</td>
                       <td nzAlign="right"> {{ item.inicial | number:'1.1-2':'en_US'}} </td>
                       <td nzAlign="right"> {{ item.final | number:'1.1-2':'en_US'}} </td>
+
                       <td nzAlign="right">
                         <ng-container *ngIf="item.contieneRollover; else sinRollover">
-                          {{ (item.final - item.lecturaNueva) + ( item.lecturaAnterior - item.inicial) | abs | number:'1.1-2':'en_US' }}
+                          {{ ((item.final - item.lecturaNueva) + ( item.lecturaAnterior - item.inicial)) * item.operacion| abs | number:'1.1-2':'en_US' }}
                         </ng-container>
                         <ng-template #sinRollover>
                           {{ (item.final - item.inicial) * item.operacion | abs | number:'1.1-2':'en_US' }}
@@ -129,12 +130,14 @@
 
                       <td nzAlign="right">
                         <ng-container *ngIf="item.contieneRollover; else sinRO">
-                          {{ (((item.final - item.lecturaNueva) + ( item.lecturaAnterior - item.inicial)) + (item.Enee * item.operacion))| abs | number:'1.1-2':'en_US' }}
+                          {{ ((((item.final - item.lecturaNueva) + ( item.lecturaAnterior - item.inicial)) - item.Enee)  * item.operacion)| abs | number:'1.1-2':'en_US' }}
                         </ng-container>
                         <ng-template #sinRO>
                           {{ ((item.Generacion * item.operacion))| abs | number:'1.1-2':'en_US' }}
                         </ng-template>
                       </td>
+
+
                       <td nzAlign="right"> {{ item.Enee * item.operacion| abs | number:'1.1-2':'en_US'}} </td>
                       <td nzAlign="right">{{ item.linea385| abs | number:'1.1-2':'en_US'}}</td>
                       <td nzAlign="right">{{ item.plantaE| abs | number:'1.1-2':'en_US'}}</td>

@@ -160,9 +160,6 @@ export class DashboardComponent implements OnInit {
       .toPromise()
       .then((datos: any) => {
         this.dataGeneracion = datos;
-        this.generacion = datos.map(x => x.final - x.inicial).reduce(
-          (previousValue, currentValue) => previousValue + currentValue);
-
         // Agregar la suma total como una entrada adicional
         this.dataGeneracion.push({
           'descripcion': 'TotalPlantasEmergencia',
@@ -170,6 +167,10 @@ export class DashboardComponent implements OnInit {
           'final': totalPlantaE
         });
 
+        this.generacion = datos.map(x => x.final - x.inicial).reduce(
+          (previousValue, currentValue) => previousValue + currentValue);
+
+        console.log(this.dataGeneracion)
         this.ChartGenetOptions = {
           scaleShowVerticalLines: true,
           responsive: true,
@@ -221,24 +222,20 @@ export class DashboardComponent implements OnInit {
           this.serviceFactura.getVenta(this.fecha1, this.fecha2)
           .toPromise()
           .then((datos: any) => {
+            console.log(datos)
             try {
               this.serviceFactura.getexistenciaRollover('Venta a ENEE', this.fecha1, this.fecha2)
                 .toPromise()
                 .then((data: any) => {
+                  console.log()
                   this.rolloverVentaEnee = data;
 
                   if (data.length > 0) {
-                    this.ventaEnee = datos.map(x =>
-                      ((x.final - data[0].lecturaNueva) + (data[0].lecturaAnterior - x.inicial))
-                    );
-                  } else {
-                    this.ventaEnee = datos.map(x => x.final - x.inicial).reduce(
-                      (previousValue, currentValue) => previousValue + currentValue
-                    );
-                  }
+                    this.ventaEnee = datos.map(x => x.diferencia);
 
                   // Extrae el valor del array si es un solo valor
                   this.ventaEnee = Array.isArray(this.ventaEnee) ? this.ventaEnee[0] : this.ventaEnee;
+                  }
                 })
                 .catch(error => {
                   console.error("Error obteniendo existencia de Rollover para 'Venta a ENEE': ", error);
@@ -250,9 +247,6 @@ export class DashboardComponent implements OnInit {
           .catch(error => {
             console.error("Error obteniendo datos de venta: ", error);
           });
-
-
-
 
           this.serviceCentroCosto.getCentroCosto()
           .toPromise()
@@ -289,7 +283,6 @@ export class DashboardComponent implements OnInit {
                   let consumo = 0;
 
                   for (let i = 0; i < infoConsumo.length; i++) {
-                    console.log(infoConsumo)
                     info.push(infoConsumo[i].descripcion);
                   }
 
@@ -368,25 +361,30 @@ export class DashboardComponent implements OnInit {
 
 
 
+
                       datosConsumo.map(x => {
                         if (x.contieneRollover) {
-                          consumo = ((x.final - x.lecturaNueva) - (x.inicial - x.lecturaAnterior)) * x.operacion
+                          consumo = ((x.final - x.lecturaNueva) + (x.inicial - x.lecturaAnterior)) * x.operacion
                         } else {
                           consumo = (x.final - x.inicial) * x.operacion
                         }
-
 
                         x.contieneRollover
                           ? total += ((x.final - x.lecturaNueva) - (x.inicial - x.lecturaAnterior)) * x.operacion
                           : total += (x.final - x.inicial) * x.operacion
 
+                          x.contieneRollover
+                          ?generacionArea += ((((x.final - x.lecturaNueva) - (x.inicial - x.lecturaAnterior)) - (x.Enee + x.plantaE)) * x.operacion)
+                          :generacionArea += x.Generacion * x.operacion
+                          console.log("Generacion Area: ", generacionArea)
 
-                        generacionArea += x.Generacion * x.operacion
 
                         enee += x.Enee * x.operacion
+
+
                         x.contieneRollover
-                          ? generacion = ((((x.final - x.lecturaNueva) - x.inicial) * x.operacion) - (x.Enee * x.operacion))
-                          : generacion = x.Generacion * x.operacion
+                          ?generacion = (((x.final - x.lecturaNueva) - (x.inicial - x.lecturaAnterior) - (x.Enee + x.plantaE)) * x.operacion )
+                          :generacion = x.Generacion * x.operacion
 
 
                         plantaE += x.plantaE
@@ -400,7 +398,8 @@ export class DashboardComponent implements OnInit {
                       })
                       etiquetas.push(centroCosto.nombre)
                       valores.push(total)
-                      this.dataConsumo = [...this.dataConsumo, { nombre: centroCosto.nombre, valor: total, generacion: generacionArea, enee: enee,  PlantaE:plantaE, Linea385:linea385 }]
+                      console.log(generacion)
+                      this.dataConsumo = [...this.dataConsumo, { nombre: centroCosto.nombre, valor: total, generaciones: generacionArea, enee: enee,  PlantaE:plantaE, Linea385:linea385 }]
                     })
                 })
           })
