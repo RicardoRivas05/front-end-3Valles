@@ -297,6 +297,8 @@ export class FacturaComponent implements OnInit {
                 }
               }
 
+              console.log(this.dataFactura)
+
               //Calculo de
               this.totalMedicion = 0;
               this.totalPlantaE = 0;

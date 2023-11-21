@@ -169,8 +169,6 @@ export class DashboardComponent implements OnInit {
 
         this.generacion = datos.map(x => x.final - x.inicial).reduce(
           (previousValue, currentValue) => previousValue + currentValue);
-
-        console.log(this.dataGeneracion)
         this.ChartGenetOptions = {
           scaleShowVerticalLines: true,
           responsive: true,
@@ -222,12 +220,10 @@ export class DashboardComponent implements OnInit {
           this.serviceFactura.getVenta(this.fecha1, this.fecha2)
           .toPromise()
           .then((datos: any) => {
-            console.log(datos)
             try {
               this.serviceFactura.getexistenciaRollover('Venta a ENEE', this.fecha1, this.fecha2)
                 .toPromise()
                 .then((data: any) => {
-                  console.log()
                   this.rolloverVentaEnee = data;
 
                   if (data.length > 0) {
@@ -235,6 +231,10 @@ export class DashboardComponent implements OnInit {
 
                   // Extrae el valor del array si es un solo valor
                   this.ventaEnee = Array.isArray(this.ventaEnee) ? this.ventaEnee[0] : this.ventaEnee;
+                  }else{
+                    this.ventaEnee = 0.0
+                    let diferencia = datos.map(x => x.diferencia)
+                    this.ventaEnee = Array.isArray(diferencia) ? diferencia[0] : this.ventaEnee;
                   }
                 })
                 .catch(error => {
@@ -243,6 +243,7 @@ export class DashboardComponent implements OnInit {
             } catch (error) {
               console.error("Error en el bloque try-catch: ", error);
             }
+
           })
           .catch(error => {
             console.error("Error obteniendo datos de venta: ", error);
@@ -359,14 +360,13 @@ export class DashboardComponent implements OnInit {
                         }
                       }
 
-
-
-
                       datosConsumo.map(x => {
                         if (x.contieneRollover) {
                           consumo = ((x.final - x.lecturaNueva) + (x.inicial - x.lecturaAnterior)) * x.operacion
+                          console.log(true)
                         } else {
                           consumo = (x.final - x.inicial) * x.operacion
+                          console.log(false)
                         }
 
                         x.contieneRollover
@@ -376,7 +376,6 @@ export class DashboardComponent implements OnInit {
                           x.contieneRollover
                           ?generacionArea += ((((x.final - x.lecturaNueva) - (x.inicial - x.lecturaAnterior)) - (x.Enee + x.plantaE)) * x.operacion)
                           :generacionArea += x.Generacion * x.operacion
-                          console.log("Generacion Area: ", generacionArea)
 
 
                         enee += x.Enee * x.operacion
@@ -398,7 +397,6 @@ export class DashboardComponent implements OnInit {
                       })
                       etiquetas.push(centroCosto.nombre)
                       valores.push(total)
-                      console.log(generacion)
                       this.dataConsumo = [...this.dataConsumo, { nombre: centroCosto.nombre, valor: total, generaciones: generacionArea, enee: enee,  PlantaE:plantaE, Linea385:linea385 }]
                     })
                 })
