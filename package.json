@@ -1,6 +1,7 @@
 {
   "name": "tresvalles-frontend",
   "version": "0.0.0",
+  "homepage": "http://LAPTOPIT/facturacion/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

@@ -134,6 +134,10 @@ export class DashboardComponent implements OnInit {
       //A partir de Aqui!!!
       this.consumo = 0;
       this.perdida = 0;
+      this.totalGeneracion = 0;
+      this.totalEnee = 0;
+      this.totaPlantaE = 0;
+      this.totalLinea385 = 0;
 
       this.serviceCentroCosto.getCentroCosto()
   .toPromise()
@@ -153,8 +157,8 @@ export class DashboardComponent implements OnInit {
     }));
   })
   .then((sums: number[]) => {
-
-    let totalPlantaE = sums.reduce((sum, current) => sum + current);
+    let totalPlantaE = 0;
+    totalPlantaE = sums.reduce((sum, current) => sum + current);
 
     this.serviceFactura.getGeneracion(false, this.fecha1, this.fecha2)
       .toPromise()
@@ -169,6 +173,7 @@ export class DashboardComponent implements OnInit {
 
         this.generacion = datos.map(x => x.final - x.inicial).reduce(
           (previousValue, currentValue) => previousValue + currentValue);
+
         this.ChartGenetOptions = {
           scaleShowVerticalLines: true,
           responsive: true,
@@ -195,6 +200,7 @@ export class DashboardComponent implements OnInit {
             borderColor: this.backgroundColor
           }
         ];
+        this.visible = true;
       })
       .catch(error => {
         console.error('Error en getGeneracion:', error);
@@ -363,10 +369,8 @@ export class DashboardComponent implements OnInit {
                       datosConsumo.map(x => {
                         if (x.contieneRollover) {
                           consumo = ((x.final - x.lecturaNueva) + (x.inicial - x.lecturaAnterior)) * x.operacion
-                          console.log(true)
                         } else {
                           consumo = (x.final - x.inicial) * x.operacion
-                          console.log(false)
                         }
 
                         x.contieneRollover
@@ -384,7 +388,6 @@ export class DashboardComponent implements OnInit {
                         x.contieneRollover
                           ?generacion = (((x.final - x.lecturaNueva) - (x.inicial - x.lecturaAnterior) - (x.Enee + x.plantaE)) * x.operacion )
                           :generacion = x.Generacion * x.operacion
-
 
                         plantaE += x.plantaE
                         linea385 += x.linea385
@@ -438,10 +441,10 @@ export class DashboardComponent implements OnInit {
 
     const options = {
       background: 'white',
-      scale: 3
+      scale: 5
     };
 
-    const doc = new jsPDF('l', 'mm', 'letter', true);
+    const doc = new jsPDF('p', 'mm', 'letter', true);
 
     html2canvas(div, options).then((canvas) => {
       const img = canvas.toDataURL('image/PNG');
