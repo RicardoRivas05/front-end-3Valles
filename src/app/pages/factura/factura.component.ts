@@ -45,8 +45,11 @@ export class FacturaComponent implements OnInit {
   barChartLegend: any;
   barChartData: any[] = [];
   dataFactura: any;
+  calculosNuevos:any;
   totalMedicion: number = 0;
   totalGeneracion: number;
+  totalLinea385:number = 0;
+  totalPlantaE: number = 0;
   totalEnee: number;
   detallePerdidas: any[] = [];
   consumoHistorico: any[] = [];
@@ -194,6 +197,9 @@ export class FacturaComponent implements OnInit {
       let etiquetas=[];
       let consumoHistorico=[];
 
+
+
+
       this.serviceFactura.getConsumoMedidores(this.centroCosto.id, this.fecha1, this.fecha2)
       .toPromise()
       .then((datos: any) => {
@@ -203,218 +209,228 @@ export class FacturaComponent implements OnInit {
         this.totalGeneracion = 0
         this.totalEnee = 0
 
-      this.dataFactura.forEach(data => {
-        infoConsumo.push(data);
-      });
 
-      let info=[];
-      let dataRollover=[]
-      let promises= []
+        this.dataFactura.forEach(data => {
+          infoConsumo.push(this.dataFactura);
+        });
 
-      for(let i=0;i<infoConsumo.length;i++){
-        info.push(infoConsumo[i].descripcion);
-      }
+        let info=[];
+        let dataRollover=[]
+        let promises= []
 
-      this.dataFactura.forEach(item => {
-        item.contieneRollover = false;
-      });
-
-        for (let i = 0; i < info.length; i++) {
-          promises.push(this.RolloverInfor.getexistenciaRollover(info[i], this.fecha1, this.fecha2).toPromise());
+        for (let i = 0; i < infoConsumo.length; i++) {
+          for (let j = 0; j < infoConsumo[i].length; j++) {
+            info.push(infoConsumo[i][j].descripcion);
+          }
         }
 
-        return Promise.all(promises)
-          .then(results => {
 
-            results.forEach(datos => {
-              if (datos && datos.length > 0) {
-                const medidorConRollover = this.dataFactura.find(item => datos.some(rollover => item.descripcion === rollover.descripcion));
-
-                if (medidorConRollover) {
-                  medidorConRollover.contieneRollover = true;
-                }
-
-                this.dataFactura.forEach(data => {
-                  infoConsumo.push(data);
-
-                });
-
-                etiquetas.push(moment(this.fecha1).format('MMMM'));
-                consumoHistorico.push(this.totalMedicion);
-
-                const rolloversPorMes = {};
-
-                datos.forEach(x => {
-                  const mes = new Date(x.fecha).getMonth();
-                  if (!rolloversPorMes[mes]) {
-                    rolloversPorMes[mes] = {
-                      lecturaAnterior: 0, // Inicializar a 0
-                      lecturaNueva: 0 // Inicializar a 0
-                    };
-                  }
-                  rolloversPorMes[mes].lecturaAnterior += x.lecturaAnterior;
-                  rolloversPorMes[mes].lecturaNueva += x.lecturaNueva;
-
-                  dataRollover.push(x);
-                });
-
-                this.dataFactura.forEach(data => {
-                  const mes = new Date(data.fecha).getMonth();
-                  if (rolloversPorMes[mes]) {
-                    data.lecturaAnterior = rolloversPorMes[mes].lecturaAnterior;
-                    data.lecturaNueva = rolloversPorMes[mes].lecturaNueva;
-                  }
-                });
-              }
-            });
+        this.dataFactura.forEach(item => {
+          item.contieneRollover = false;
+        });
 
 
-
-            this.contieneRollover = dataRollover.length > 0;
-
-            if (this.contieneRollover) {
-              for (let i = 0; i < info.length; i++) {
-                for (let c = 0; c < dataRollover.length; c++) {
-                  if (info[i] === dataRollover[c].descripcion) {
-                    this.dataFactura.forEach(data => {
-                      if (data.descripcion === dataRollover[c].descripcion) {
-                        data.lecturaAnterior = dataRollover[c].lecturaAnterior;
-                        data.lecturaNueva = dataRollover[c].lecturaNueva;
-                      }
-                    });
-                  }
-                }
-              }
-            }
-
-            this.totalMedicion = 0;
-            this.dataFactura.forEach(data => {
-              const medicion = data.contieneRollover
-              ?((data.final - data.lecturaNueva) - (data.inicial-data.lecturaAnterior)) * data.operacion
-              :(data.final - data.inicial) * data.operacion
-
-              const generacion = data.Generacion * data.operacion;
-              console.log(data.Enee, "%",data.operacion)
-              // console.log("Calculo: ",data.Enee*data.operacion+100)
-              const enee = (data.Enee * data.operacion) + 100;
-
-              this.totalMedicion += medicion
-              this.totalGeneracion += generacion
-              this.totalEnee += enee;
-            });
-
-
-
-        let f1=this.fecha1;
-        let f2=this.fecha2;
-
-
-          for(let z=1;z<6;z++){
-            f1= moment(f1).add(-1, 'month').startOf('day').format('YYYY-MM-DD HH:mm');
-            f2= moment(f2).add(-1, 'month').startOf('day').format('YYYY-MM-DD HH:mm');
-            etiquetas.push(moment(f1).format('MMMM'));
-            this.serviceFactura.getConsumoMedidores(this.centroCosto.id,f1,f2)
-            .toPromise()
-            .then((datos: any) => {
-              consumoHistorico.push(datos.map(x=> x.final-x.inicial).reduce((z,y)=>z+y));
-            })
+          for (let i = 0; i < info.length; i++) {
+            const medidorCodificado = encodeURIComponent(info[i])
+            // console.log(info[i])
+            promises.push(this.RolloverInfor.getexistenciaRollover(medidorCodificado, this.fecha1, this.fecha2).toPromise());
           }
 
+          return Promise.all(promises)
+            .then(results => {
+              results.forEach(datos => {
+                // console.log('Datos: ', datos)
+                if (datos && datos.length > 0) {
+                  const medidorConRollover = this.dataFactura.find(item => datos.some(rollover => item.descripcion === rollover.descripcion));
+
+                  if (medidorConRollover) {
+                    medidorConRollover.contieneRollover = true;
+                  }
+
+                  this.dataFactura.forEach(data => {
+                    infoConsumo.push(data);
+                  });
+
+                  etiquetas.push(moment(this.fecha1).format('MMMM'));
+                  consumoHistorico.push(this.totalMedicion);
+
+                  const rolloversPorMes = {};
+
+                  datos.forEach(x => {
+                    const mes = new Date(x.fecha).getMonth();
+                    if (!rolloversPorMes[mes]) {
+                      rolloversPorMes[mes] = {
+                        lecturaAnterior: 0, // Inicializar a 0
+                        lecturaNueva: 0 // Inicializar a 0
+                      };
+                    }
+                    rolloversPorMes[mes].lecturaAnterior += x.lecturaAnterior;
+                    rolloversPorMes[mes].lecturaNueva += x.lecturaNueva;
+
+                    dataRollover.push(x);
+                  });
+
+                  this.dataFactura.forEach(data => {
+                    const mes = new Date(data.fecha).getMonth();
+                    if (rolloversPorMes[mes]) {
+                      data.lecturaAnterior = rolloversPorMes[mes].lecturaAnterior;
+                      data.lecturaNueva = rolloversPorMes[mes].lecturaNueva;
+                    }
+                  });
+                }
+              });
+
+              this.contieneRollover = dataRollover.length > 0;
+
+              if (this.contieneRollover) {
+                for (let i = 0; i < info.length; i++) {
+                  for (let c = 0; c < dataRollover.length; c++) {
+                    if (info[i] === dataRollover[c].descripcion) {
+                      this.dataFactura.forEach(data => {
+                        if (data.descripcion === dataRollover[c].descripcion) {
+                          data.lecturaAnterior = dataRollover[c].lecturaAnterior;
+                          data.lecturaNueva = dataRollover[c].lecturaNueva;
+                        }
+                      });
+                    }
+                  }
+                }
+              }
+
+              console.log(this.dataFactura)
+
+              //Calculo de
+              this.totalMedicion = 0;
+              this.totalPlantaE = 0;
+              this.totalLinea385 = 0;
+              this.dataFactura.forEach(data => {
+                  const medicion = data.contieneRollover
+                    ? ((data.final - data.lecturaNueva) + (data.lecturaAnterior - data.inicial)) * data.operacion
+                    : (data.final - data.inicial) * data.operacion;
+
+                  const enee = data.Enee * data.operacion;
+                  const plantaE = data.plantaE;
+                  const linea385 = data.linea385;
+
+                  const generacion = data.contieneRollover
+                    ? ((((data.final - data.lecturaNueva) + (data.lecturaAnterior - data.inicial)) - data.Enee)  * data.operacion)
+                    : (data.Generacion * data.operacion);
+
+                  this.totalMedicion += medicion;
+                  this.totalGeneracion += generacion;
+                  this.totalEnee += enee;
+                  this.totalPlantaE += plantaE;
+                  this.totalLinea385 += linea385;
+              });
+
+          let f1=this.fecha1;
+          let f2=this.fecha2;
+
+
+            for(let z=1;z<6;z++){
+              f1= moment(f1).add(-1, 'month').startOf('day').format('YYYY-MM-DD HH:mm');
+              f2= moment(f2).add(-1, 'month').startOf('day').format('YYYY-MM-DD HH:mm');
+              etiquetas.push(moment(f1).format('MMMM'));
+              this.serviceFactura.getConsumoMedidores(this.centroCosto.id,f1,f2)
+              .toPromise()
+              .then((datos: any) => {
+                consumoHistorico.push(datos.map(x=> x.final-x.inicial).reduce((z,y)=>z+y));
+              })
+            }
+
+          });
       })//Cierre del getExistencias metod. 2
-    })
 
-    console.log()
+      this.serviceFactura.getFactores(this.centroCosto.id)
+      .toPromise()
+      .then((datos: any) => {
+        this.factores = datos
+        this.boolCC = datos.length > 0 ? true:false
+       //// Grafico Consumo
+       let etiquetas=[];
+       let data=[]
+       datos.map(x=>{
+        etiquetas.push(x.nombre)
+        data.push(x.valor*100)
+      })
 
-        this.serviceFactura.getFactores(this.centroCosto.id)
-          .toPromise()
-          .then((datos: any) => {
-            this.factores = datos
-            this.boolCC = datos.length > 0 ? true:false
-           //// Grafico Consumo
-           let etiquetas=[];
-           let data=[]
-           datos.map(x=>{
-            etiquetas.push(x.nombre)
-            data.push(x.valor*100)
-          })
+       this.ChartOptions = {
+        responsive: true,
+          legend: {
+            position:'right'
+          },
+        tooltips: {
+          callbacks: {
+            label: function (t, d) {
+              return d.labels[t.index] + ': ' + d.datasets[0].data[t.index].toLocaleString('en-US') + ' %';
+            },
+          },
+        }
+      };
+      this.ChartLabels = etiquetas
 
-           this.ChartOptions = {
-            responsive: true,
-              legend: {
-                position:'right'
-              },
-            tooltips: {
-              callbacks: {
-                label: function (t, d) {
-                  return d.labels[t.index] + ': ' + d.datasets[0].data[t.index].toLocaleString('en-US') + ' %';
-                },
-              },
-            }
-          };
-          this.ChartLabels = etiquetas
-
-          this.ChartData = [
-            {
-              //data: datos.detalleConsumo.filter((item) => item.tipoEntidad === false).map((item) => item.Consumo),
-              data: data,
-              backgroundColor: this.backgroundColor,
-            }
-          ];
-          this.ChartType = 'pie';
-          })
-
-      this.barChartLabels=etiquetas;
-      this.barChartData = [
+      this.ChartData = [
         {
-          data:consumoHistorico,
-          label:'Energia Activa(kWh)',
-          backgroundColor: ['rgba(255, 99, 132, 0.8)','rgba(54, 162, 235, 0.8)','rgba(54, 162, 235, 0.8)','rgba(54, 162, 235, 0.8)','rgba(54, 162, 235, 0.8)','rgba(54, 162, 235, 0.8)']
+          //data: datos.detalleConsumo.filter((item) => item.tipoEntidad === false).map((item) => item.Consumo),
+          data: data,
+          backgroundColor: this.backgroundColor,
         }
       ];
-      this.visible = true;
+      this.ChartType = 'pie';
+      })
+
+    this.barChartLabels=etiquetas;
+    this.barChartData = [
+      {
+        data:consumoHistorico,
+        label:'Energia Activa(kWh)',
+        backgroundColor: ['rgba(255, 99, 132, 0.8)','rgba(54, 162, 235, 0.8)','rgba(54, 162, 235, 0.8)','rgba(54, 162, 235, 0.8)','rgba(54, 162, 235, 0.8)','rgba(54, 162, 235, 0.8)']
       }
+    ];
+    this.visible = true;
+    }
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-  changeCentroCosto(centroCosto) {
-    this.listOfGrupoFiltrado = this.listOfGrupo.filter(x => x.centroCostoId === centroCosto.id);
-    this.grupo = undefined;
-  }
-  changeRango(index) {
-    this.visibleFecha = index === '11' ? true : false;
-  }
+changeCentroCosto(centroCosto) {
+this.listOfGrupoFiltrado = this.listOfGrupo.filter(x => x.centroCostoId === centroCosto.id);
+this.grupo = undefined;
+}
+changeRango(index) {
+this.visibleFecha = index === '11' ? true : false;
+}
 
-  imprimir(): void {
-    this.spinner.show();
-    const div: any = document.getElementById('content');
+imprimir(): void {
+this.spinner.show();
+const div: any = document.getElementById('content');
 
-    const options = {
-      background: 'white',
-      scale: 3
-    };
+const options = {
+  background: 'white',
+  scale: 3
+};
 
-    const doc = new jsPDF('p', 'mm', 'a4', true);
+// const doc = new jsPDF('p', 'mm', [210, 297], true);
+const doc = new jsPDF('p', 'mm', 'a4', true);
 
-    html2canvas(div, options).then((canvas) => {
-      const img = canvas.toDataURL('image/PNG');
-      // Add image Canvas to PDF
-      const bufferX = 5;
-      const bufferY = 5;
-      const imgProps = (<any>doc).getImageProperties(img);
-      const pdfWidth = doc.internal.pageSize.getWidth() - 2 * bufferX;
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+html2canvas(div, options).then((canvas) => {
+  const img = canvas.toDataURL('image/PNG');
+  // Add image Canvas to PDF
+  const bufferX = 5;
+  const bufferY = 5;
+  const imgProps = (<any>doc).getImageProperties(img);
+  const pdfWidth = doc.internal.pageSize.getWidth() - 2 * bufferX;
+  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      (doc as any).addImage(img, 'PNG', bufferX, bufferY, pdfWidth, pdfHeight, undefined, 'FAST');
+  (doc as any).addImage(img, 'PNG', bufferX, bufferY, pdfWidth, pdfHeight, undefined, 'FAST');
+  return doc;
+}).then((doc) => {
+  doc.save(`Factura.pdf`);
+  this.spinner.hide();
+});
 
-      return doc;
-    }).then((doc) => {
-      doc.save(`Factura.pdf`);
-      this.spinner.hide();
-    });
-
-  }
+}
 }
 
